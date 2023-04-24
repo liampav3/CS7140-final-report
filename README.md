@@ -86,7 +86,22 @@ This more expressive achitecture allows ENNs to make more accurate joint predict
 
 ### Epinet
 
+The Epinet \[11\] is an ENN that can be combined with a base neural network to form a combined ENN. The Epinet $\phi$ is added to a neural network $f$ to form the combined ENN $f^\*$ as 
+$$f^\*(x, z) = f(x) + \phi(f'(x), z)$$
+
+where $f'(x)$ are intermediate features of the network $f(x)$. The epinet can be added to already trained models. 
+
+The epinet is composed of two components, a prior network and a learned network. The output of the prior network and the learned network are added to produce the output of the epinet. The prior network is initialized and never trained, representing prior uncertainty in the network. The learned network is trained and learns to tune its outputs so that network outputs likely predictions $f^\*(x, z)$ for some input $x$ for all probable values of $z$.
+
+The epinet is trained using stochastic gradient descent and an Monte Carlo approximation of the integral over the epistemic index $z$. The epinet can be trained using standard, marginal predication-based loss functions. Another paper demonstrated that training with marginal loss functions perturbed by random priors can induce good joint predictions. In the case of the epinet, its loss function is perturbed by its randomly intialized prior network.
+
+FIGURE 
+
+The epinet \[11\] was shown to outperform or match many BNN architectures \[5, 6, 9, 13, 14\] on a synthetic classification dataset generated using the neural testbed\[15\]. As seen in the figure above, the epinet achieved the best computational cost to performance ratio by a wide margin on joint log loss.
+
 ## Conclusion
+
+Uncertainty awareness is an essential skill for artificial intelligence that enables many important capabilities like effective exploration and accurate confidence estimation. We present two major avenues of current research into enhancing the uncertainty quantification of deep learning architectures. Utilizing a posterior of the parameters of a base network, Bayesian neural networks quantify their uncertainty more accurately than basic neural arhcitectures and make predictions that account for uncertainty. Epistemic neural networks use accurate, expressive joint predictions to distinguish between different sources of uncertainty.
 
 ## Bibliography
 
@@ -113,5 +128,11 @@ This more expressive achitecture allows ENNs to make more accurate joint predict
 \[11\] Osband, Ian, et al. "Epistemic neural networks." arXiv preprint arXiv:2107.08924 (2021).
 
 \[12\] Wen, Zheng, et al. "From predictions to decisions: The importance of joint predictive distributions." arXiv preprint arXiv:2107.09224 (2021).
+
+\[13\] Welling, Max, and Yee W. Teh. "Bayesian learning via stochastic gradient Langevin dynamics." Proceedings of the 28th international conference on machine learning (ICML-11). 2011.
+
+\[14\] Dwaracherla, Vikranth, et al. "Hypermodels for exploration." arXiv preprint arXiv:2006.07464 (2020).
+
+\[15\] Osband, Ian, et al. "The neural testbed: Evaluating joint predictions." Advances in Neural Information Processing Systems 35 (2022): 12554-12565.
 
 
