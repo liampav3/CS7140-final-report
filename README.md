@@ -69,6 +69,8 @@ For classifcation, the networks are trained using a proper scoring rule since th
 
 Some variants of Deep Ensembles are also presented in the paper. These include a Deep Ensemble with adversarial training where sytnthetic examples that the model is likely to misclassify are generated and used during training. These synthetic examples are created by perturbing existing training examples in directions where the model's loss is increasing \[9\].
 
+FIGURE
+
 Deep Ensembles \[9\] were demonstrated to have more accurate confidence estimates than MC-Dropout \[5\]. In this experiment, both architectures were trained on the MNIST dataset \[10\]. Images of non-MNIST digits were incorportated into the test set to measure the difference in model behavior both in and out-of-distribution. At each test point, the model's confidence was measured as the softmax probabilty the model assigned to its prediction. In the figure above, each model's accuracy was plotted as a function of its confidence. Deep Ensemble's accuracy more consistently increases as its confidence increases, suggesting its confidence levels are more accurate than MC-Dropout's \[9\]. 
 
 
@@ -76,11 +78,15 @@ Deep Ensembles \[9\] were demonstrated to have more accurate confidence estimate
 
 Epistemic neural networks \[11\] aim to enhance the uncertainty awareness of deep learning architectures by enabling them to better discern the source of their uncertainty. Specifically, ENNs aim to differentiate between epistemic uncertainty, which stems from a model's own lack of knowledge, and aleatoric uncertainty, which stems from genuine ambiguity in the input. To distinguish between these, an ENN examines the structure of a model's joint predictions. Unlike marginal predictions which predict the class of a single input, joint predictions are the combined probability distribution over the classifcation classes for a set of multiple inputs.  As seen in the figure below, a diffuse joint prediction indicates aleatoric uncertainty, whereas a joint prediction with more conditional structure implies epistemic uncertainty \[11\]. 
 
+FIGURE
+
 Standard neural arhcitectures were built to make mariginal predictions so their joint prediction model is very unexpressive, always being the product of the marginal predictions. In order to use the joint prediction to distinguish between types of uncertainty, ENNs must have a more expressive method of computing joint predictions so that different conditional structures can be output. This is achieved via the introduction of an epistemic index $z$. The epistemic index is a latent input that the ENN samples from some pre-specified distribution $P_z$. The joint predicted probability for a set of labels $y_{1:t}$ for a set of inputs $x_{1:t}$ will then be computed as 
 
 $$p(y_{1:t}) = \int P_z(z) \prod_{i=1}^t \text{softmax}(f(x_i, z))_{y_i} dz$$
 
 Depending on how the model's output varies with respect to $z$, different joint predictions conditional structures can be achieved. As seen in the figure below, a model who's output does not vary with $z$ will have an independent joint prediction structure where as a model that does vary with $z$ will have a more conditional structure \[11\]. 
+
+FIGURE
 
 This more expressive achitecture allows ENNs to make more accurate joint predictions, which has been shown to lower regret in decision making problems \[12\].
 
