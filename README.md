@@ -34,7 +34,7 @@ $$\hat{f}(x) =  \frac{1}{T} \sum_{t=1}^{T} f_{\phi_t}(x)$$
 
 which corresponds to averaging the models output over $T$ different runs with independently drawn dropout patterns. The uncertainty of this prediction is measure as
 
-$$\text{Var}_{f(x)} = \tau^{-1}\mathbb{I} + \frac{1}{T} \sum_{t=1}^{T} f_{\phi_t}(x)^T f_{\phi_t}(x) + \hat{f}(x)^T \hat{f}(x)$$
+$$\text{Var}_{f(x)} = \tau^{-1}\mathbb{I} + \frac{1}{T} \sum_{t=1}^{T} \left(f_{\phi_t}(x)^T f_{\phi_t}(x)\right) - \hat{f}(x)^T \hat{f}(x)$$
 
 where $\tau$ is a measure of model precision determined by the network's hyperparameters.
 
