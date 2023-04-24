@@ -26,7 +26,7 @@ $$ W_i = M_i \cdot \text{diag}([z_{i,j}]_{j=1}^{K_i})$$
 
 $$ z_{i,j} = \text{Bernoulli}(p_i)$$
 
-where $L$ is the number of layers and $K_i$ is the dimensionaltiy of the $i$-th layer. This representation corresponds to some base weight matrix $M_i$ having its features randomly dropped out with probability $p_i$. The base matrices $M_i$ and the dropout probabilities $p_i$ are optimized to minimize an approximation of KL divergence with the true posterior.
+where $L$ is the number of layers and $K_i$ is the dimensionaltiy of the $i$-th layer. This representation corresponds to some base weight matrix $M_i$ having its features randomly dropped out with probability $p_i$. The base matrices $M_i$ and the dropout probabilities $p_i$ are optimized to minimize an approximation of KL divergence with the true posterior \[5\].
 
 Once the dropout approximation is fit, predictions and uncertainties are computed using the following Monte Carlo approximation of the expectation over the random variables $W_i$. $T$ independent samples of the random variables $W_i$ are drawn to form $T$ parameter sets $[\phi_1, ..., \phi_T]$. The prediction on some input $x$ is then computed as
 
@@ -36,26 +36,41 @@ which corresponds to averaging the models output over $T$ different runs with in
 
 $$\text{Var}_{f(x)} = \tau^{-1}\mathbb{I} + \frac{1}{T} \sum_{t=1}^{T} \left(f_{\phi_t}(x)^T f_{\phi_t}(x)\right) - \hat{f}(x)^T \hat{f}(x)$$
 
-where $\tau$ is a measure of model precision determined by the network's hyperparameters.
+where $\tau$ is a measure of model precision determined by the network's hyperparameters \[5\].
 
+FIGURE
 
-
-On an MNIST handwritten digit classification task, the MC-Dropout architecture was demonstrated to have appropriately uncertain (diffuse over multiple classes) softmax probability predictive distribution on ambiguous inputs. When used to extrapolate beyond its training data on a regression task, the MC-Dropout architecture had inaccurate predictive outputs but correctly returned that it was highly uncertain. A particularly interesting result is that the architecture reported an increasingly higher uncertainty as it extrapolated further past its training data (FIGURE).
+On an MNIST \[10\] handwritten digit classification task, the MC-Dropout architecture was demonstrated to have appropriately uncertain (diffuse over multiple classes) softmax probability predictive distribution on ambiguous inputs. When used to extrapolate beyond its training data on a regression task, the MC-Dropout architecture had inaccurate predictive outputs but correctly returned that it was highly uncertain. A particularly interesting result, seen in the figure above, is that the architecture reported an increasingly higher uncertainty as it extrapolated further past its training data \[5\].
 
 However, another paper demonstrated that dropout methods may be approximating the risk of a model rather than its uncertainty \[7\]. Whereas uncertainty is a model's confusion over which parameters are optimal, the risk of a model is an inherent limit in how much variation a model can accurately predict. Risk stems from randomness in the problem that the model is too simple to capture. Quanitfying risk is less useful for a learning model than uncerstainty because risk cannot be resolved without a change in architecture \[7\].
 
 #### Bayes by Backdrop
 
-The Bayes by Backdrop \[6\] BNN architecture utilizes one of two gaussian-based approximations of the posterior. The first is a standard diagonal Gaussian $\mathcal{N}(0, \mathbb{I})$ who's mean and variance are shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior. The second is a mixed-scale distribution formed by the combination of two zero-mean Gaussians with different variances. The mean and variance of this distribution is also shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior.
+The Bayes by Backdrop \[6\] BNN architecture utilizes one of two gaussian-based approximations of the posterior. The first is a standard diagonal Gaussian $\mathcal{N}(0, \mathbb{I})$ who's mean and variance are shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior. The second is a mixed-scale distribution formed by the combination of two zero-mean Gaussians with different variances. The mean and variance of this distribution is also shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior \[6\].
 
-Training on a curved regression task demonstrated that Bayes by Backdrop had more reasonable uncertainty estimates that a standard neural network. The above figure shows that the Bayes by Backdrop correctly indicates that its uncertainty increases as it predicts further away from its training data. The neural network, on the other hand, overconfidently estimates that its uncertainty decreases as it extrapolates further past its training data. 
+FIGURE
 
-Bayes by Backprop was also shown to outperform other algorithms on decision problems. The architecture was tested on a bandit problem in which it chooses a mushroom to eat, being rewarded for selecting edible mushrooms and punished for eating poisonous mushrooms. The regret of the model was measured as the difference between its earned reward and the maximum reward earned by an oracle agent. On this task, the Bayes by Backprop agent outperformed various greedy agents, achieving lower regret than all. 
+Training on a curved regression task demonstrated that Bayes by Backdrop had more reasonable uncertainty estimates that a standard neural network. The above figure shows that the Bayes by Backdrop correctly indicates that its uncertainty increases as it predicts further away from its training data. The neural network, on the other hand, overconfidently estimates that its uncertainty decreases as it extrapolates further past its training data \[6\]. 
+
+FIGURE
+
+Bayes by Backprop was also shown to outperform other algorithms on decision problems. The architecture was tested on a bandit problem in which it chooses a mushroom to eat, being rewarded for selecting edible mushrooms and punished for eating poisonous mushrooms. The regret of the model was measured as the difference between its earned reward and the maximum reward earned by an oracle agent. On this task, the Bayes by Backprop agent outperformed various greedy agents, achieving lower regret than all as seen in the figure above \[6\]. 
 
 
 ### Sample Approches
 
+Rather than approximating the posterior with a simpler distribution, sample-based approaches approximate the true posterior with a finite sample of that posterior. These models use this sample to compute sample-based approximations of expectations over the true posterior. Directly sampling the high-dimensional, complex posteriors of deep learning parameters is intractable so the difficulty in creating these models lies in formulating an efficient sampling method. These methods must be both efficient in time required to sample and the number of samples needed to achieve a good approximation of the true posterior.
+
 #### Deep Ensemble
+
+The Deep Ensemble architecture \[9\] trains multiple instantiations of the same base neural architecture. Each of these instantiations has a different parameter setting and together they form a sample over the posterior of all possible parameter settings. Unlike many other ensemble methods, these models are all trained on the entire set of data. The authors found that initializing each model randomly and shuffling the order of the training data for each network was enough to sufficiently spread the ensemble across the posterior \[9\]. 
+
+For classifcation, the networks are trained using a proper scoring rule since these reward accurate predictive distributions. Examples of proper scoring rules include negative log loss and Brier score. For regression, the networks are configured to output two values, a predicted mean and predicted variance at that point, and trained to minimize the loss MATH.
+
+Some variants of Deep Ensembles are also presented in the paper. These include a Deep Ensemble with adversarial training where sytnthetic examples that the model is likely to misclassify are generated and used during training. These synthetic examples are created by perturbing existing training examples in directions where the model's loss is increasing \[9\].
+
+Deep Ensembles \[9\] were demonstrated to have more accurate confidence estimates than MC-Dropout \[5\]. In this experiment, both architectures were trained on the MNIST dataset \[10\]. Images of non-MNIST digits were incorportated into the test set to measure the difference in model behavior both in and out-of-distribution. At each test point, the model's confidence was measured as the softmax probabilty the model assigned to its prediction. In the figure above, each model's accuracy was plotted as a function of its confidence. Deep Ensemble's accuracy more consistently increases as its confidence increases, suggesting its confidence levels are more accurate than MC-Dropout's \[9\]. 
+
 
 ## Epistemic Neural Networks
 
@@ -81,3 +96,7 @@ Bayes by Backprop was also shown to outperform other algorithms on decision prob
 \[7\] Osband, Ian. "Risk versus uncertainty in deep learning: Bayes, bootstrap and the dangers of dropout." NIPS workshop on bayesian deep learning. Vol. 192. 2016.
 
 \[8\] Blei, David M., Alp Kucukelbir, and Jon D. McAuliffe. "Variational inference: A review for statisticians." Journal of the American statistical Association 112.518 (2017): 859-877.
+
+\[9\] Lakshminarayanan, Balaji, Alexander Pritzel, and Charles Blundell. "Simple and scalable predictive uncertainty estimation using deep ensembles." Advances in neural information processing systems 30 (2017).
+
+\[10\]
