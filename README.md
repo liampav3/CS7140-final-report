@@ -17,7 +17,7 @@ To generate the probability distribution over its parameters, a BNN begins with 
 
 ### Variational Approaches
 
-Variational inference seeks to model the true posterior over the model’s weights with a similar, but more computationally tractable distribution. This is achieved by defining a set of parameterized density functions and optimizing the parameters to minimize Kullbeck-Lieber divergence with respect to the posterior. The exact set of density functions and minimization procedure used is architecture-dependent (FIND A SOURCE). This survey covers two variational inference-based methods: Bayes by Backprop and MC-Dropout.
+Variational inference seeks to model the true posterior over the model’s weights with a similar, but more computationally tractable distribution. This is achieved by defining a set of parameterized density functions and optimizing the parameters to minimize Kullbeck-Lieber (KL) divergence with respect to the posterior. The exact set of density functions and minimization procedure used is architecture-dependent \[8\]. This survey covers two variational inference-based methods: Bayes by Backprop and MC-Dropout.
 
 #### MC-Dropout
 Dropout is a feature in which a network's inputs and/or hidden layer nodes are randomly set to 0 with some probability $p$. The MC-Dropout BNN \[5\] architecture adds and tunes dropout on its base network to simulate the network's behavior over the true posterior. Specifically, the random variable $W_i$ in the true posterior corresponding to the weights of the i-th layer is approximated by 
@@ -46,6 +46,12 @@ However, another paper demonstrated that dropout methods may be approximating th
 
 #### Bayes by Backdrop
 
+The Bayes by Backdrop \[6\] BNN architecture utilizes one of two gaussian-based approximations of the posterior. The first is a standard diagonal Gaussian $\mathcal{N}(0, \mathbb{I})$ who's mean and variance are shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior. The second is a mixed-scale distribution formed by the combination of two zero-mean Gaussians with different variances. The mean and variance of this distribution is also shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior.
+
+Training on a curved regression task demonstrated that Bayes by Backdrop had more reasonable uncertainty estimates that a standard neural network. The above figure shows that the Bayes by Backdrop correctly indicates that its uncertainty increases as it predicts further away from its training data. The neural network, on the other hand, overconfidently estimates that its uncertainty decreases as it extrapolates further past its training data. 
+
+Bayes by Backprop was also shown to outperform other algorithms on decision problems. The architecture was tested on a bandit problem in which it chooses a mushroom to eat, being rewarded for selecting edible mushrooms and punished for eating poisonous mushrooms. The regret of the model was measured as the difference between its earned reward and the maximum reward earned by an oracle agent. On this task, the Bayes by Backprop agent outperformed various greedy agents, achieving lower regret than all. 
+
 
 ### Sample Approches
 
@@ -73,3 +79,5 @@ However, another paper demonstrated that dropout methods may be approximating th
 \[6\] Blundell, Charles, et al. "Weight uncertainty in neural network." International conference on machine learning. PMLR, 2015.
 
 \[7\] Osband, Ian. "Risk versus uncertainty in deep learning: Bayes, bootstrap and the dangers of dropout." NIPS workshop on bayesian deep learning. Vol. 192. 2016.
+
+\[8\] Blei, David M., Alp Kucukelbir, and Jon D. McAuliffe. "Variational inference: A review for statisticians." Journal of the American statistical Association 112.518 (2017): 859-877.
