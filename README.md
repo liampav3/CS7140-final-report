@@ -59,9 +59,15 @@ On an MNIST handwritten digit classification task, the MC-Dropout architecture w
 ## Bibliography
 
 \[1\] Amodei, Dario, et al. "Concrete problems in AI safety." arXiv preprint arXiv:1606.06565 (2016).
+
 \[2\] Grigorescu, Sorin, et al. "A survey of deep learning techniques for autonomous driving." Journal of Field Robotics 37.3 (2020): 362-386.
+
 \[3\] Akay, Altug, and Henry Hess. "Deep learning: current and emerging applications in medicine and technology." IEEE journal of biomedical and health informatics 23.3 (2019): 906-920.
+
 \[4\] Neal, Radford M. Bayesian learning for neural networks. Vol. 118. Springer Science & Business Media, 2012.
+
 \[5\] Gal, Yarin, and Zoubin Ghahramani. "Dropout as a bayesian approximation: Representing model uncertainty in deep learning." international conference on machine learning. PMLR, 2016.
+
 \[6\] Blundell, Charles, et al. "Weight uncertainty in neural network." International conference on machine learning. PMLR, 2015.
+
 \[7\] Osband, Ian. "Risk versus uncertainty in deep learning: Bayes, bootstrap and the dangers of dropout." NIPS workshop on bayesian deep learning. Vol. 192. 2016.
