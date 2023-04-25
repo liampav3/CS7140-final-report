@@ -93,11 +93,11 @@ Epistemic neural networks \[11\] aim to enhance the uncertainty awareness of dee
 
 *Figure 5: A basic image classification problem demonstrating the type of joint prediction distributions that indicate aleatoric/epistemic uncertainty respectively. Figure by \[11\].*
 
-Standard neural architectures were built to make marginal predictions so their joint prediction model is very unexpressive, always being the product of the marginal predictions. In order to use joint predictions to distinguish between types of uncertainty, ENNs must have a more expressive method of computing joint predictions so that different conditional structures can be produced by the network. This is achieved via the introduction of an epistemic index $z$. The epistemic index is a latent input that the ENN samples from some pre-specified distribution $P_z$. The joint predicted probability for a set of labels $y_{1:t}$ for a set of inputs $x_{1:t}$ will then be computed as
+Standard neural architectures were built to make marginal predictions so their joint prediction model is very unexpressive, always being the product of the marginal predictions. In order to use joint predictions to distinguish between types of uncertainty, ENNs must have a more expressive method of computing joint predictions so that different conditional structures can be produced by the network. This is achieved via the introduction of an epistemic index $z$. The epistemic index is a latent input that the ENN samples from some pre-specified distribution $P_z$. The joint predicted probability for a set of labels $y_{1:t}$ on a set of inputs $x_{1:t}$ will then be computed as
 
 $$p(y_{1:t}) = \int P_z(z) \prod_{i=1}^t \text{softmax}(f(x_i, z))_{y_i} dz$$
 
-Depending on how the model's output varies with respect to $z$, different joint predictions conditional structures can be achieved. As seen in the figure below, a model who's output does not vary with $z$ will have an independent joint prediction structure whereas a model that does vary with $z$ will have a more conditional structure \[11\].
+Depending on how the model's output varies with respect to $z$, different joint prediction conditional structures can be achieved. As seen in the figure below, a model whose output does not vary with $z$ will have an independent joint prediction structure whereas a model that does vary with $z$ will have a more conditional structure \[11\].
 
 ![fig6](figures/ENN2.png)
 
@@ -112,13 +112,13 @@ $$f^\*(x, z) = f(x) + \phi(f'(x), z)$$
 
 where $f'(x)$ are intermediate features of the network $f(x)$. The epinet can be added to already trained models.
 
-The epinet is composed of two components, a prior network and a learned network. The output of the prior network and the learned network are added to produce the output of the epinet. The prior network is initialized and never trained, representing prior uncertainty in the network. The learned network is trained and learns to tune its outputs so that network outputs likely predictions $f^\*(x, z)$ for some input $x$ for all probable values of $z$.
+The epinet is composed of two components, a prior network and a learned network. The output of the prior network and the learned network are added to produce the output of the epinet. The prior network is initialized and never trained, representing prior uncertainty in the network. The learned network is trained and learns to tune its outputs so that, given some input $x$, the network outputs likely predictions $f^\*(x, z)$ for that input over all probable values of $z$ \[11\].
 
-The epinet is trained using stochastic gradient descent and an Monte Carlo approximation of the integral over the epistemic index $z$. The epinet can be trained using standard, marginal prediction-based loss functions. Another paper demonstrated that training with marginal loss functions perturbed by random priors can induce good joint predictions. In the case of the epinet, its loss function is perturbed by its randomly initialized prior network.
+The epinet is trained using stochastic gradient descent and a Monte Carlo approximation of the integral over the epistemic index $z$. The epinet can be trained using standard, marginal prediction-based loss functions. Another paper demonstrated that training with marginal loss functions perturbed by random priors can induce good joint predictions \[12\]. In the case of the epinet, its loss function is perturbed by its randomly initialized prior network \[11\].
 
 ![fig7](figures/ENN3.png)
 
-*Figure 7: Performance of the epinet \[11\] and multiple BNN architectures \[5, 6, 9, 13, 14\] on the synthetic neural testbed \[15\] dataset. Figure by \[11\].*
+*Figure 7: Performance of the epinet \[11\] and multiple BNN architectures \[5, 6, 9, 13, 14\] on a synthetic neural testbed \[15\] dataset. Figure by \[11\].*
 
 The epinet \[11\] was shown to outperform or match many BNN architectures \[5, 6, 9, 13, 14\] on a synthetic classification dataset generated using the neural testbed\[15\]. As seen in the figure above, the epinet achieved the best computational cost to performance ratio by a wide margin on joint log loss.
 
