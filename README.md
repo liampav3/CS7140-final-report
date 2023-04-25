@@ -38,7 +38,7 @@ $$\text{Var}_{f(x)} = \tau^{-1}\mathbb{I} + \frac{1}{T} \sum_{t=1}^{T} \left(f_{
 
 where $\tau$ is a measure of model precision determined by the network's hyperparameters \[5\].
 
-FIGURE
+![fig1](figures/mcdropout.png)
 
 On an MNIST \[10\] handwritten digit classification task, the MC-Dropout architecture was demonstrated to have appropriately uncertain (diffuse over multiple classes) softmax probability predictive distribution on ambiguous inputs. When used to extrapolate beyond its training data on a regression task, the MC-Dropout architecture had inaccurate predictive outputs but correctly returned that it was highly uncertain. A particularly interesting result, seen in the figure above, is that the architecture reported an increasingly higher uncertainty as it extrapolated further past its training data \[5\].
 
@@ -48,11 +48,11 @@ However, another paper demonstrated that dropout methods may be approximating th
 
 The Bayes by Backdrop \[6\] BNN architecture utilizes one of two gaussian-based approximations of the posterior. The first is a standard diagonal Gaussian $\mathcal{N}(0, \mathbb{I})$ who's mean and variance are shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior. The second is a mixed-scale distribution formed by the combination of two zero-mean Gaussians with different variances. The mean and variance of this distribution is also shifted by variational parameters $\mu, p$ that are refined to minimize a KL divergence objective from the true posterior \[6\].
 
-FIGURE
+![fig2](figures/bbb1.png)
 
 Training on a curved regression task demonstrated that Bayes by Backdrop had more reasonable uncertainty estimates that a standard neural network. The above figure shows that the Bayes by Backdrop correctly indicates that its uncertainty increases as it predicts further away from its training data. The neural network, on the other hand, overconfidently estimates that its uncertainty decreases as it extrapolates further past its training data \[6\]. 
 
-FIGURE
+![fig3](figures/bbb2.png)
 
 Bayes by Backprop was also shown to outperform other algorithms on decision problems. The architecture was tested on a bandit problem in which it chooses a mushroom to eat, being rewarded for selecting edible mushrooms and punished for eating poisonous mushrooms. The regret of the model was measured as the difference between its earned reward and the maximum reward earned by an oracle agent. On this task, the Bayes by Backprop agent outperformed various greedy agents, achieving lower regret than all as seen in the figure above \[6\]. 
 
@@ -69,7 +69,7 @@ For classifcation, the networks are trained using a proper scoring rule since th
 
 Some variants of Deep Ensembles are also presented in the paper. These include a Deep Ensemble with adversarial training where sytnthetic examples that the model is likely to misclassify are generated and used during training. These synthetic examples are created by perturbing existing training examples in directions where the model's loss is increasing \[9\].
 
-FIGURE
+![fig4](figures/ensemble.png)
 
 Deep Ensembles \[9\] were demonstrated to have more accurate confidence estimates than MC-Dropout \[5\]. In this experiment, both architectures were trained on the MNIST dataset \[10\]. Images of non-MNIST digits were incorportated into the test set to measure the difference in model behavior both in and out-of-distribution. At each test point, the model's confidence was measured as the softmax probabilty the model assigned to its prediction. In the figure above, each model's accuracy was plotted as a function of its confidence. Deep Ensemble's accuracy more consistently increases as its confidence increases, suggesting its confidence levels are more accurate than MC-Dropout's \[9\]. 
 
@@ -78,7 +78,7 @@ Deep Ensembles \[9\] were demonstrated to have more accurate confidence estimate
 
 Epistemic neural networks \[11\] aim to enhance the uncertainty awareness of deep learning architectures by enabling them to better discern the source of their uncertainty. Specifically, ENNs aim to differentiate between epistemic uncertainty, which stems from a model's own lack of knowledge, and aleatoric uncertainty, which stems from genuine ambiguity in the input. To distinguish between these, an ENN examines the structure of a model's joint predictions. Unlike marginal predictions which predict the class of a single input, joint predictions are the combined probability distribution over the classifcation classes for a set of multiple inputs.  As seen in the figure below, a diffuse joint prediction indicates aleatoric uncertainty, whereas a joint prediction with more conditional structure implies epistemic uncertainty \[11\]. 
 
-FIGURE
+![fig5](figures/ENN1.png)
 
 Standard neural arhcitectures were built to make mariginal predictions so their joint prediction model is very unexpressive, always being the product of the marginal predictions. In order to use the joint prediction to distinguish between types of uncertainty, ENNs must have a more expressive method of computing joint predictions so that different conditional structures can be output. This is achieved via the introduction of an epistemic index $z$. The epistemic index is a latent input that the ENN samples from some pre-specified distribution $P_z$. The joint predicted probability for a set of labels $y_{1:t}$ for a set of inputs $x_{1:t}$ will then be computed as 
 
@@ -86,7 +86,7 @@ $$p(y_{1:t}) = \int P_z(z) \prod_{i=1}^t \text{softmax}(f(x_i, z))_{y_i} dz$$
 
 Depending on how the model's output varies with respect to $z$, different joint predictions conditional structures can be achieved. As seen in the figure below, a model who's output does not vary with $z$ will have an independent joint prediction structure where as a model that does vary with $z$ will have a more conditional structure \[11\]. 
 
-FIGURE
+![fig6](figures/ENN2.png)
 
 This more expressive achitecture allows ENNs to make more accurate joint predictions, which has been shown to lower regret in decision making problems \[12\].
 
@@ -101,7 +101,7 @@ The epinet is composed of two components, a prior network and a learned network.
 
 The epinet is trained using stochastic gradient descent and an Monte Carlo approximation of the integral over the epistemic index $z$. The epinet can be trained using standard, marginal predication-based loss functions. Another paper demonstrated that training with marginal loss functions perturbed by random priors can induce good joint predictions. In the case of the epinet, its loss function is perturbed by its randomly intialized prior network.
 
-FIGURE 
+![fig7](figures/ENN3.png)
 
 The epinet \[11\] was shown to outperform or match many BNN architectures \[5, 6, 9, 13, 14\] on a synthetic classification dataset generated using the neural testbed\[15\]. As seen in the figure above, the epinet achieved the best computational cost to performance ratio by a wide margin on joint log loss.
 
